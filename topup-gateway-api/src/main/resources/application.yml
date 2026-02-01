@@ -15,13 +15,4 @@ quarkus:
       generation: none
       version-check:
         enabled: false
-    sql-load-script: import.sql
 
-"%test":
-  quarkus:
-    datasource:
-      db-kind: mysql
-    hibernate-orm:
-      database:
-        generation: drop-and-create
-      sql-load-script: import.sql
