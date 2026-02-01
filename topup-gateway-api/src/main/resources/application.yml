@@ -1,0 +1,27 @@
+quarkus:
+  package:
+    jar:
+      enabled: true
+  http:
+    port: 8081
+  datasource:
+    db-kind: mysql
+    username: root
+    password: 123456789
+    reactive:
+      url: vertx-reactive:mysql://localhost:3307/db_zip_code
+  hibernate-orm:
+    database:
+      generation: none
+      version-check:
+        enabled: false
+    sql-load-script: import.sql
+
+"%test":
+  quarkus:
+    datasource:
+      db-kind: mysql
+    hibernate-orm:
+      database:
+        generation: drop-and-create
+      sql-load-script: import.sql
