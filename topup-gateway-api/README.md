@@ -1,126 +1,78 @@
-1. topup-gateway-api (API Gateway)
-Responsabilidad: Punto de entrada para los usuarios. Valida el formato del JSON e inserta la solicitud inicial en la base de datos.
-URL: POST http://localhost:8080/v1/topups
-Input (JSON):
-{
-  "phoneNumber": "987654321",
-  "amount": 50.0,
-  "carrier": "MOVISTAR"
-}
-Output: 202 Accepted (Indica que la petición fue recibida y está en proceso de validación).
+Actúa como un experto en Quarkus y Java 21. Genera el microservicio topup-gateway-api utilizando un flujo 100% reactivo con Mutiny. El proyecto ya tiene configurada la conexión a la base de datos MariaDB en el archivo application.yml (o application.yaml), por lo que no es necesario generar archivos de configuración adicionales.
+
+Instrucciones del Proyecto:
+
+Modelos de Datos (DTOs):
+
+Crea un TopupRequest con: phoneNumber (String), amount (BigDecimal) y carrier (Enum: MOVISTAR, CLARO, ENTEL).
+
+Crea un ErrorResponse con: code (String), message (String) y details (List de Strings).
+
+Usa anotaciones de Bean Validation (@NotBlank, @Positive, @NotNull) para validar la entrada.
+
+Entidad y Base de Datos:
+
+Define la entidad TopupRequestEntity usando Panache Entity (Reactive).
+
+Debe mapear a la tabla recharge_requests con esta estructura:
+
+SQL
+CREATE TABLE recharge_requests (
+    recharge_id VARCHAR(36) PRIMARY KEY,
+    phone_number VARCHAR(15) NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    status VARCHAR(20) DEFAULT 'PENDING',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+Configuración Crítica: Para evitar errores de validación de Hibernate, mapea status como String. Las columnas created_at y updated_at deben tener insertable = false, updatable = false para que MariaDB gestione sus valores automáticamente.
+
+Endpoint y Lógica:
+
+Crea un recurso REST en POST /v1/topups.
+
+La lógica debe ser reactiva:
+
+Validar el DTO de entrada.
+
+Generar un UUID para el recharge_id.
+
+Persistir la entidad con estado PENDING.
+
+Retornar un 202 Accepted tras la persistencia exitosa.
+
+Manejo de Errores:
+
+Implementa un ExceptionMapper reactivo que capture ConstraintViolationException.
+
+Debe devolver un 400 Bad Request con el formato de ErrorResponse definido, detallando los campos inválidos.
+
+Restricciones:
+
+No generes archivos OpenAPI/YAML.
+
+No uses arquitectura hexagonal; mantén una estructura de paquetes estándar.
+
+No generes tests unitarios.
+
+Documenta cada método y clase con Javadoc.
+
+## 🗄️ Diccionario de Datos: `recharge_requests`
+
+| Campo | Tipo | ¿Para qué sirve? | ¿Cuándo cambia o se asigna? |
+| --- | --- | --- | --- |
+| **`recharge_id`** | `VARCHAR(36)` | Identificador único universal (UUID) de la transacción. | Se genera automáticamente en la capa de aplicación al recibir un nuevo `POST` exitoso. Es inmutable. |
+| **`phone_number`** | `VARCHAR(15)` | Número celular destino de la recarga. | Se asigna en la creación según el JSON de entrada. No debe cambiar tras la inserción. |
+| **`amount`** | `DECIMAL` | Monto monetario que se desea recargar. | Se define en la creación. Debe validarse como un valor positivo antes de persistirse. |
+| **`status`** | `ENUM` | Representa el estado actual de la recarga dentro del flujo asíncrono. | Cambia a lo largo del flujo: `PENDING` al crear, `PROCESSING` cuando es tomada por el dispatcher, y `SUCCESSFUL` o `FAILED` tras la validación final. |
+| **`created_at`** | `TIMESTAMP` | Fecha y hora en que se recibió la solicitud. | Se asigna automáticamente al insertar el registro mediante `DEFAULT CURRENT_TIMESTAMP`. |
+| **`updated_at`** | `TIMESTAMP` | Fecha y hora de la última actualización del registro. | Se actualiza automáticamente cada vez que el estado u otro campo del registro cambia. |
 
 
-## Arquitectura Hexagonal (Ports & Adapters)
+## 📝 Detalle del Request Body (JSON)
 
-Este proyecto sigue estrictamente el patrón de **Arquitectura Hexagonal**, cuyo objetivo es desacoplar la lógica de negocio (Dominio) de los detalles de implementación externos (Infraestructura, UI, Bases de Datos).
-
-### Estructura y Propósito de las Capas:
-
-1.  **Domain (Núcleo)**:
-    *   **Objetivo**: Contener la lógica de negocio pura y las entidades del modelo. No depende de ningún framework ni librería externa (ni siquiera de Quarkus o Hibernate en su forma más pura, aunque aquí usamos algunas anotaciones por pragmatismo pero mantenemos el acoplamiento mínimo).
-    *   **Componentes**: `TopupRequest` (Modelo), `TopupRepositoryPort` (Puerto/Interfaz).
-    *   **Por qué**: Para que el negocio sea el centro de la aplicación y pueda evolucionar independientemente de la tecnología.
-
-2.  **Application (Caso de Uso)**:
-    *   **Objetivo**: Orquestar los flujos de negocio. Implementa los casos de uso específicos.
-    *   **Componentes**: `TopupService`.
-    *   **Por qué**: Sirve de puente entre el mundo exterior (Infraestructura) y el Núcleo (Domain), asegurando que las reglas de negocio se ejecuten.
-
-3.  **Infrastructure (Adaptadores)**:
-    *   **Objetivo**: Implementar la comunicación con el mundo exterior. Se divide en:
-        *   **Adapters In (Entrada)**: "Drivean" la aplicación. Ejemplo: `TopupResource` (API REST). Reciben HTTP y llaman al Servicio de Aplicación.
-        *   **Adapters Out (Salida)**: Son "Drireados" por la aplicación. Ejemplo: `PanacheTopupRepository` (Persistencia). Implementan los Puertos definidos en el Dominio para guardar datos en la BD.
-    *   **Por qué**: Permite cambiar la base de datos o exponer la funcionalidad por otro medio (ej. Kafka, gRPC) sin tocar ni una línea de la lógica de negocio.
-
-### Árbol del Proyecto:
-
-```
-src/main/java/pe/com/topup/gateway
-├── application
-│   └── service
-│       └── TopupService.java           <-- Application: Orquestador de lógica
-├── domain
-│   ├── model
-│   │   └── TopupRequest.java           <-- Domain: Entidad pura
-│   └── port
-│       └── TopupRepositoryPort.java    <-- Domain: Puerto (Interfaz para BD)
-└── infrastructure
-    ├── adapter
-    │   ├── in
-    │   │   └── web
-    │   │       ├── TopupResource.java              <-- Infra (In): Adaptador REST
-    │   │       ├── dto
-    │   │       │   ├── ErrorResponse.java
-    │   │       │   └── TopupRequestDto.java
-    │   │       └── errorhandler
-    │   │           └── ValidationExceptionMapper.java
-    │   └── out
-    │       └── persistence
-    │           ├── PanacheTopupRepository.java     <-- Infra (Out): Adaptador BD
-    │           └── entity
-    │               └── TopupRequestEntity.java
-```
-
-# topup-gateway-api
-
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
-
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
-
-## Running the application in dev mode
-
-You can run your application in dev mode that enables live coding using:
-
-```shell script
-./mvnw quarkus:dev
-```
-
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
-
-## Packaging and running the application
-
-The application can be packaged using:
-
-```shell script
-./mvnw package
-```
-
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
-
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
-
-If you want to build an _über-jar_, execute the following command:
-
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
-```
-
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
-
-## Creating a native executable
-
-You can create a native executable using:
-
-```shell script
-./mvnw package -Dnative
-```
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
-
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./target/topup-gateway-api-1.0.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
-
-## Related Guides
-
-- REST ([guide](https://quarkus.io/guides/rest)): A Jakarta REST implementation utilizing build time processing and Vert.x. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it.
-- Reactive MySQL client ([guide](https://quarkus.io/guides/reactive-sql-clients)): Connect to the MySQL database using the reactive pattern
-- REST Jackson ([guide](https://quarkus.io/guides/rest#json-serialisation)): Jackson serialization support for Quarkus REST. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it
-- YAML Configuration ([guide](https://quarkus.io/guides/config-yaml)): Use YAML to configure your Quarkus application
-
-
+| Campo | Tipo | Requisito | Validación / Descripción |
+| --- | --- | --- | --- |
+| `phoneNumber` | `String` | **Obligatorio** | Número de teléfono destino de la recarga. Debe ser una cadena no vacía; se recomienda usar formato internacional. |
+| `amount` | `Decimal` | **Obligatorio** | Monto monetario de la recarga. Debe ser un valor positivo, con un mínimo permitido de `0.1`. |
+| `carrier` | `Enum` | **Obligatorio** | Operadora telefónica asociada al número. Valores permitidos: `MOVISTAR`, `CLARO`, `ENTEL`. |
