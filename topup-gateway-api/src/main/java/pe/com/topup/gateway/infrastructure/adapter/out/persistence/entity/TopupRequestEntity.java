@@ -1,4 +1,4 @@
-package pe.com.topup.gateway.model;
+package pe.com.topup.gateway.infrastructure.adapter.out.persistence.entity;
 
 import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 import jakarta.persistence.Column;
@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
  */
 @Entity
 @Table(name = "recharge_requests")
-public class TopupRequestEntity extends PanacheEntityBase {
+public class TopupRequestEntity {
 
     @Id
     @Column(name = "recharge_id", length = 36)

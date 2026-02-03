@@ -16,8 +16,6 @@ import jakarta.inject.Inject;
  * REST Resource for managing Topup operations.
  */
 @Path("/v1/topups")
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
 public class TopupResource {
 
     private final TopupService topupService;

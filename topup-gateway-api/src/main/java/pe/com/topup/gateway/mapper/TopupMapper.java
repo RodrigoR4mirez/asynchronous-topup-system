@@ -2,7 +2,7 @@ package pe.com.topup.gateway.mapper;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import pe.com.topup.gateway.dto.TopupRequest;
-import pe.com.topup.gateway.model.TopupRequestEntity;
+import pe.com.topup.gateway.infrastructure.adapter.out.persistence.entity.TopupRequestEntity;
 
 import java.util.UUID;
 

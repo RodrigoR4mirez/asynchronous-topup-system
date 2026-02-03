@@ -2,7 +2,7 @@ package pe.com.topup.gateway.repository;
 
 import io.quarkus.hibernate.reactive.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.ApplicationScoped;
-import pe.com.topup.gateway.model.TopupRequestEntity;
+import pe.com.topup.gateway.infrastructure.adapter.out.persistence.entity.TopupRequestEntity;
 
 /**
  * Repository for TopupRequestEntity.

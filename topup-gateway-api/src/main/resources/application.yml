@@ -9,10 +9,9 @@ quarkus:
     username: root
     password: 123456789
     reactive:
-      url: vertx-reactive:mysql://localhost:3307/db_zip_code
+      url: vertx-reactive:mysql://localhost:3307/phone_recharge_db
   hibernate-orm:
     database:
       generation: none
       version-check:
         enabled: false
-
