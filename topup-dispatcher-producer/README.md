@@ -2,8 +2,8 @@
 
 ## Descripción General
 
-Actúa como un desarrollador senior de **Quarkus 3** y **Java 21**.  
-Debes generar el componente **topup-dispatcher-producer**.
+ASYNCHRONOUS: **Quarkus 3** y **Java 21**.  
+Componente: **topup-dispatcher-producer**.
 
 Este componente es un **Worker Asíncrono** encargado de desacoplar la API de la mensajería mediante el envío de eventos a **Kafka**.
 
