@@ -6,11 +6,12 @@ import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.Multi;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
+
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import pe.com.topup.producer.application.dto.TopupRequestEvent;
-import pe.com.topup.producer.domain.entity.TopupRequestEntity;
 import pe.com.topup.producer.domain.repository.TopupRequestRepository;
-import io.quarkus.hibernate.reactive.panache.Panache;
+
 import java.util.logging.Logger;
 
 /**
@@ -32,7 +33,7 @@ public class DispatcherService {
     TopupRequestRepository repository;
 
     @Inject
-    @Channel("recharge-requests-out")
+    @Channel("topup-requests")
     MutinyEmitter<TopupRequestEvent> emitter;
 
     /**
@@ -53,6 +54,7 @@ public class DispatcherService {
      *         procesamiento.
      */
     @Scheduled(every = "1s")
+    @WithTransaction
     public Uni<Void> processPendingRequests() {
         LOG.fine("Paso 1: Inicio del ciclo de escaneo (Polling) de solicitudes pendientes.");
 
@@ -80,9 +82,8 @@ public class DispatcherService {
                             .onItem().transformToUni(v -> {
                                 // Paso 5: Actualización final del estado en la base de datos para confirmar el
                                 // envío.
-                                return Panache
-                                        .withTransaction(() -> repository.update(
-                                                "status = 'SENT_TO_KAFKA' where rechargeId = ?1", entity.rechargeId))
+                                return repository.update(
+                                        "status = 'SENT_TO_KAFKA' where rechargeId = ?1", entity.rechargeId)
                                         .onItem().invoke(() -> LOG.info(
                                                 "Estado actualizado a SENT_TO_KAFKA para ID: " + entity.rechargeId));
                             })

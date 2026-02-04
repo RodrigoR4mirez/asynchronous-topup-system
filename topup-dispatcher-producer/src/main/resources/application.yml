@@ -25,9 +25,9 @@ quarkus:
 mp:
   messaging:
     outgoing:
-      zip-code-emitter:
+      topup-requests:
         connector: smallrye-kafka
-        topic: zip-code-topic
+        topic: topup-topic
         bootstrap:
           servers: ${CONFIG_KAFKA_BROKERS:PLAINTEXT://localhost:19092,PLAINTEXT://localhost:29092}
         schema:

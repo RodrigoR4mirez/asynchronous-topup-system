@@ -7,29 +7,29 @@ import java.math.BigDecimal;
  * de recarga.
  * <p>
  * Este objeto se serializa y envía al tópico de Kafka
- * 'topic-validacion-recarga'.
+ * 'topup-topic'.
  * Contiene la información necesaria para que los consumidores procesen la
  * recarga.
  * </p>
  */
 public record TopupRequestEvent(
-        /**
-         * Identificador único de la recarga.
-         */
-        String rechargeId,
+                /**
+                 * Identificador único de la recarga.
+                 */
+                String rechargeId,
 
-        /**
-         * Número de teléfono beneficiario.
-         */
-        String phoneNumber,
+                /**
+                 * Número de teléfono beneficiario.
+                 */
+                String phoneNumber,
 
-        /**
-         * Monto de la recarga.
-         */
-        BigDecimal amount,
+                /**
+                 * Monto de la recarga.
+                 */
+                BigDecimal amount,
 
-        /**
-         * Estado de la recarga al momento del envío.
-         */
-        String status) {
+                /**
+                 * Estado de la recarga al momento del envío.
+                 */
+                String status) {
 }
