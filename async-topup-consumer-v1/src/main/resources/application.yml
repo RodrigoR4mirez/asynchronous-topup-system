@@ -1,0 +1,81 @@
+quarkus:
+  package:
+    jar:
+      enabled: true
+  http:
+    port: 9094
+    test-port: 0
+  devservices:
+    enabled: false
+  kafka:
+    devservice:
+      enabled: false
+  datasource:
+    db-kind: mysql
+    username: ${CONFIG_DB_USERNAME:root}
+    password: ${CONFIG_DB_PASSWORD:123456789}
+    reactive:
+      url: vertx-reactive:mysql://${CONFIG_DB_HOST:localhost:3307}/${CONFIG_DB_NAME:phone_recharge_db}
+  hibernate-orm:
+    database:
+      generation: none
+      version-check:
+        enabled: false
+  log:
+    level: INFO
+    file:
+      enable: true
+      path: logs/app.log
+      format: "%d{yyyy-MM-dd HH:mm:ss} %-5p [%c{2.}] (%t) %s%e%n"
+      rotation:
+        max-file-size: 10M
+        max-backup-index: 5
+
+mp:
+  messaging:
+    incoming:
+      topup-consumer:
+        connector: smallrye-kafka
+        topic: topup-topic
+        bootstrap:
+          servers: ${CONFIG_KAFKA_BROKERS:PLAINTEXT://localhost:19092, PLAINTEXT://localhost:29092}
+        schema:
+          registry:
+            url: ${CONFIG_SCHEMA_REGISTRY_URL:http://localhost:8081}
+        group:
+          id: topup-consumer-group-01
+        key:
+          deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value:
+          deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+          specific:
+            avro:
+              reader: true
+          subject:
+            name:
+              strategy: io.confluent.kafka.serializers.subject.TopicNameStrategy
+              separator: "-"
+        failure-strategy: ignore
+        deserialization-failure-handler: failure-logger
+        auto:
+          offset:
+            reset: earliest
+          register:
+            schemas: false
+        enable:
+          auto:
+            commit: false
+        max:
+          pool:
+            records: 50
+          interval:
+            ms: 30000
+        session:
+          timeout:
+            ms: 10000
+        heartbeat:
+          interval:
+            ms: 3000
+        use:
+          latest:
+            version: true
