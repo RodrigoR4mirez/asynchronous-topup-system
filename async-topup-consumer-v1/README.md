@@ -155,6 +155,7 @@ Worker crítico, reactivo y confiable.
 
 ## Tablas
 
+```sql
 docker exec -it mariadb10432 mysql -u root -p123456789 phone_recharge_db -e \
                                                 "CREATE TABLE IF NOT EXISTS recharge_requests ( \
                                                  recharge_id VARCHAR(36) PRIMARY KEY, \
@@ -176,4 +177,17 @@ docker exec -it mariadb10432 mysql -u root -p123456789 phone_recharge_db -e \
                                                   completion_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, \
                                                   error_details TEXT, \
                                                   CONSTRAINT fk_recharge FOREIGN KEY (recharge_id) REFERENCES recharge_requests(recharge_id));"
+```
+
+```shell
+## Eliminar topico
+docker exec -it kafka-broker-1 kafka-topics \                                
+  --bootstrap-server localhost:19092 \
+  --delete --topic topup-topic  
+  
+## crear topico de nuevo
+docker exec -it kafka-broker-1 kafka-topics \                                
+  --bootstrap-server localhost:19092 \
+  --create --topic topup-topic \
+  --partitions 3 --replication-factor 2
 ```
