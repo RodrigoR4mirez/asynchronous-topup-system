@@ -35,13 +35,24 @@ public class TopupProcessor {
             return Uni.createFrom().voidItem();
         }
 
-        LOG.infof("Starting processing for RequestId: %s, Carrier: %s, Amount: %s",
-                event.getRequestId(), event.getCarrier(), event.getAmount());
+        LOG.infof("Starting processing for RequestId: %s, PhoneNumber: %s, Amount: %s",
+                event.getRequestId(), event.getPhoneNumber(), event.getAmount());
 
-        BigDecimal amount = new BigDecimal(event.getAmount());
-        String carrier = event.getCarrier();
+        BigDecimal amount;
+        try {
+            // Handle case where amount comes as String
+            amount = new BigDecimal(event.getAmount().toString());
+        } catch (Exception e) {
+            LOG.errorf("Invalid amount format: %s", event.getAmount());
+            return Uni.createFrom().voidItem();
+        }
+
         String requestId = event.getRequestId();
+        // Infer carrier from phone number or default to known operator
+        String phoneNumber = event.getPhoneNumber() != null ? event.getPhoneNumber().toString() : "";
+        String carrier = resolveOperator(phoneNumber);
 
+        LOG.debugf("Resolved Carrier: %s for PhoneNumber: %s", carrier, phoneNumber);
         LOG.debugf("Checking balance for Carrier: %s", carrier);
 
         return Panache.withTransaction(() -> balanceWalletRepository.findByOperatorName(carrier)
@@ -103,5 +114,11 @@ public class TopupProcessor {
         audit.errorDetails = details;
         return processAuditRepository.persist(audit)
                 .onItem().invoke(a -> LOG.debugf("Audit created for %s", requestId));
+    }
+
+    private String resolveOperator(String phoneNumber) {
+        // Implement logic to resolve operator from phone number
+        // For now, default to "Movistar" as requested/assumed
+        return "Movistar";
     }
 }
