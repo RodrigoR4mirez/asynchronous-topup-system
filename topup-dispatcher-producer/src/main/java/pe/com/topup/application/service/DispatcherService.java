@@ -77,9 +77,8 @@ public class DispatcherService {
                                         TopUpEvent event = TopUpEvent.newBuilder()
                                                         .setRequestId(entity.rechargeId)
                                                         .setPhoneNumber(entity.phoneNumber)
-                                                        .setAmount(entity.amount != null ? entity.amount.doubleValue()
+                                                        .setAmount(entity.amount != null ? entity.amount.toString()
                                                                         : null)
-                                                        .setCarrier(null) // El entity no tiene carrier, se envía null
                                                         .build();
 
                                         LOG.info("Paso 4: Evento Avro creado. Payload: " + event.toString()
