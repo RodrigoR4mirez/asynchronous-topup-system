@@ -8,7 +8,7 @@ quarkus:
   devservices:
     enabled: false
   kafka:
-    devservice:
+    devservices:
       enabled: false
   datasource:
     db-kind: mysql
