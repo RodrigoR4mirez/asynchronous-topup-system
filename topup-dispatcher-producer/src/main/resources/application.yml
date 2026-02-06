@@ -3,7 +3,7 @@ quarkus:
     jar:
       enabled: true
   http:
-    port: 9091
+    port: 8085
     test-port: 0
   devservices:
     enabled: false
@@ -33,9 +33,19 @@ mp:
         schema:
           registry:
             url: ${CONFIG_SCHEMA_REGISTRY_URL:http://localhost:8081}
+        key:
+          serializer: org.apache.kafka.common.serialization.StringSerializer
+        value:
+          serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+          subject:
+            name:
+              strategy: io.confluent.kafka.serializers.subject.TopicNameStrategy
+        specific:
+          avro:
+            reader: false
         auto:
           register:
-            schemas: true # Utilizarlo solo en Desarrollo o local
+            schemas: true
         use:
           latest:
             version: true

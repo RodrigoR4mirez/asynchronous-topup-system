@@ -1,4 +1,4 @@
-package pe.com.topup.producer.application.dto;
+package pe.com.topup.application.dto;
 
 import java.math.BigDecimal;
 

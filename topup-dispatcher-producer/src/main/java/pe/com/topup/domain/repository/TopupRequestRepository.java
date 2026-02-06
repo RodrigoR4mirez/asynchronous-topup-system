@@ -1,10 +1,10 @@
-package pe.com.topup.producer.domain.repository;
+package pe.com.topup.domain.repository;
 
 import io.quarkus.hibernate.reactive.panache.PanacheRepositoryBase;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.util.List;
-import pe.com.topup.producer.domain.entity.TopupRequestEntity;
+import pe.com.topup.domain.entity.TopupRequestEntity;
 
 /**
  * Repositorio de acceso a datos para la entidad {@link TopupRequestEntity}.

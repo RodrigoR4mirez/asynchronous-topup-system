@@ -149,7 +149,7 @@ docker exec -it kafka-broker-1 kafka-console-consumer   --bootstrap-server kafka
 {
   "type": "record",
   "name": "TopUpEvent",
-  "namespace": "pe.com.topup.producer.model",
+  "namespace": "pe.com.topup.model",
   "fields": [
     { "name": "requestId", "type": ["null", "string"], "default": null },
     { "name": "phoneNumber", "type": ["null", "string"], "default": null },
@@ -279,4 +279,21 @@ docker exec -it mariadb10432 mysql -u root -p123456789 phone_recharge_db -e \
                                                   completion_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, \
                                                   error_details TEXT, \
                                                   CONSTRAINT fk_recharge FOREIGN KEY (recharge_id) REFERENCES recharge_requests(recharge_id));"
+                                                  
+docker exec -it mariadb10432 mysql -u root -p123456789 phone_recharge_db -e \
+" \
+INSERT INTO balance_wallets (operator_name, current_balance, currency) VALUES ('Movistar', 100.00, 'PEN'); \
+INSERT INTO balance_wallets (operator_name, current_balance, currency) VALUES ('Claro', 50.00, 'PEN'); \
+"
+
+docker exec -it mariadb10432 mysql -u root -p123456789 phone_recharge_db -e \
+"truncate table balance_wallets; \
+truncate table process_audits; \
+truncate table recharge_requests;"
+
+docker exec -it mariadb10432 mysql -u root -p123456789 phone_recharge_db -e \ "
+DELETE FROM process_audits; \
+DELETE FROM recharge_requests;" 
 ```
+
+

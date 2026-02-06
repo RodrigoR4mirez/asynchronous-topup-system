@@ -17,6 +17,9 @@ import pe.com.topup.gateway.service.TopupService;
 @ApplicationScoped
 public class TopupServiceImpl implements TopupService {
 
+    private static final java.util.logging.Logger LOG = java.util.logging.Logger
+            .getLogger(TopupServiceImpl.class.getName());
+
     private final TopupRepository repository;
     private final TopupMapper mapper;
 
@@ -29,8 +32,15 @@ public class TopupServiceImpl implements TopupService {
     @Override
     @WithTransaction
     public Uni<Void> registerTopup(TopupRequest request) {
+        LOG.info("Paso 1: Recibida solicitud de recarga. Datos: Mobile=" + request.getPhoneNumber() + " Amount="
+                + request.getAmount());
+
         TopupRequestEntity entity = mapper.toEntity(request);
+        LOG.info("Paso 2: Datos mapeados a entidad. Estado inicial=" + entity.status);
+
+        LOG.info("Paso 3: Iniciando persistencia en base de datos...");
         return repository.persist(entity)
+                .invoke(() -> LOG.info("Paso 4: Persistencia exitosa. ID generado=" + entity.rechargeId))
                 .replaceWithVoid();
     }
 }

@@ -3,7 +3,7 @@ quarkus:
     jar:
       enabled: true
   http:
-    port: 8081
+    port: 9090
   datasource:
     db-kind: mysql
     username: root

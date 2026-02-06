@@ -3,7 +3,7 @@ quarkus:
     jar:
       enabled: true
   http:
-    port: 9094
+    port: 8086
     test-port: 0
   devservices:
     enabled: false
@@ -38,7 +38,7 @@ mp:
         connector: smallrye-kafka
         topic: topup-topic
         bootstrap:
-          servers: ${CONFIG_KAFKA_BROKERS:PLAINTEXT://localhost:19092, PLAINTEXT://localhost:29092}
+          servers: ${CONFIG_KAFKA_BROKERS:PLAINTEXT://localhost:19092,PLAINTEXT://localhost:29092}
         schema:
           registry:
             url: ${CONFIG_SCHEMA_REGISTRY_URL:http://localhost:8081}
@@ -56,7 +56,6 @@ mp:
               strategy: io.confluent.kafka.serializers.subject.TopicNameStrategy
               separator: "-"
         failure-strategy: ignore
-        deserialization-failure-handler: failure-logger
         auto:
           offset:
             reset: earliest

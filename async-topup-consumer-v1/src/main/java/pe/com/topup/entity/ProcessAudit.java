@@ -1,4 +1,4 @@
-package pe.com.topup.consumer.entity;
+package pe.com.topup.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

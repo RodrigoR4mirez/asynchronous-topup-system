@@ -1,4 +1,4 @@
-package pe.com.topup.producer.application.service;
+package pe.com.topup.application.service;
 
 import io.quarkus.scheduler.Scheduled;
 import io.smallrye.reactive.messaging.MutinyEmitter;
@@ -9,8 +9,9 @@ import jakarta.inject.Inject;
 import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 
 import org.eclipse.microprofile.reactive.messaging.Channel;
-import pe.com.topup.producer.application.dto.TopupRequestEvent;
-import pe.com.topup.producer.domain.repository.TopupRequestRepository;
+import pe.com.topup.application.dto.TopupRequestEvent;
+import pe.com.topup.domain.repository.TopupRequestRepository;
+import pe.com.topup.model.TopUpEvent;
 
 import java.util.logging.Logger;
 
@@ -53,21 +54,23 @@ public class DispatcherService {
      * @return Un {@link Uni} que representa la completitud del ciclo de
      *         procesamiento.
      */
-    @Scheduled(every = "1s")
+    @Scheduled(every = "10s")
     @WithTransaction
     public Uni<Void> processPendingRequests() {
-        LOG.fine("Paso 1: Inicio del ciclo de escaneo (Polling) de solicitudes pendientes.");
+        LOG.info("Paso 1: Inicio del ciclo de escaneo (Polling) de solicitudes pendientes.");
 
         return repository.findPendingRequests()
                 .onItem().transformToMulti(list -> {
                     if (list.isEmpty()) {
                         return Multi.createFrom().empty();
                     }
-                    LOG.info("Paso 2: Se encontraron " + list.size() + " solicitudes pendientes.");
+                    LOG.info("Paso 2: Se encontraron " + list.size() + " solicitudes pendientes. IDs: "
+                            + list.stream().map(e -> e.rechargeId).toList());
                     return Multi.createFrom().iterable(list);
                 })
                 .onItem().transformToUniAndConcatenate(entity -> {
-                    LOG.fine("Procesando recarga ID: " + entity.rechargeId);
+                    LOG.info("Paso 3: Procesando ID " + entity.rechargeId + ". Transformando a evento. Datos: "
+                            + entity.toString());
 
                     // Paso 3: Serialización de la información al formato de mensajería asíncrona.
                     TopupRequestEvent event = new TopupRequestEvent(
@@ -76,19 +79,24 @@ public class DispatcherService {
                             entity.amount,
                             entity.status);
 
+                    LOG.info("Paso 4: Evento creado. Payload: " + event.toString() + ". Enviando a Kafka...");
                     // Paso 4: Publicación del evento en el broker de Kafka.
                     return emitter.send(event)
-                            .onItem().invoke(() -> LOG.info("Evento enviado a Kafka para ID: " + entity.rechargeId))
+                            .onItem()
+                            .invoke(() -> LOG
+                                    .info("Paso 5: Evento enviado exitosamente a Kafka para ID: " + entity.rechargeId))
                             .onItem().transformToUni(v -> {
                                 // Paso 5: Actualización final del estado en la base de datos para confirmar el
                                 // envío.
                                 return repository.update(
                                         "status = 'SENT_TO_KAFKA' where rechargeId = ?1", entity.rechargeId)
                                         .onItem().invoke(() -> LOG.info(
-                                                "Estado actualizado a SENT_TO_KAFKA para ID: " + entity.rechargeId));
+                                                "Paso 6: Estado en DB actualizado a SENT_TO_KAFKA para ID: "
+                                                        + entity.rechargeId));
                             })
                             .onFailure()
-                            .invoke(ex -> LOG.severe("Error enviando ID " + entity.rechargeId + ": " + ex.getMessage()))
+                            .invoke(ex -> LOG
+                                    .severe("Error en el flujo para ID " + entity.rechargeId + ": " + ex.getMessage()))
                             // Robustez: Si falla, recuperamos con null para no romper el flujo de otros
                             // items
                             .onFailure().recoverWithNull();

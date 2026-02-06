@@ -1,4 +1,4 @@
-package pe.com.topup.producer.domain.entity;
+package pe.com.topup.domain.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
