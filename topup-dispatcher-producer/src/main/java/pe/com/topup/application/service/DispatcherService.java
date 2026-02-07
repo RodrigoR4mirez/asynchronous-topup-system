@@ -79,6 +79,7 @@ public class DispatcherService {
                                                         .setPhoneNumber(entity.phoneNumber)
                                                         .setAmount(entity.amount != null ? entity.amount.toString()
                                                                         : null)
+                                                        .setCarrier(entity.carrier)
                                                         .build();
 
                                         LOG.info("Paso 4: Evento Avro creado. Payload: " + event.toString()

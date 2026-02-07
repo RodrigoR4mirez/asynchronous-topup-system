@@ -5,6 +5,7 @@
   "fields": [
     { "name": "requestId", "type": ["null", "string"], "default": null },
     { "name": "phoneNumber", "type": ["null", "string"], "default": null },
-    { "name": "amount", "type": ["null", "string"], "default": null }
+    { "name": "amount", "type": ["null", "string"], "default": null },
+    { "name": "carrier", "type": ["null", "string"], "default": null }
   ]
 }

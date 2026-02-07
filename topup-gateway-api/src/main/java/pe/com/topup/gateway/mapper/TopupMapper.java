@@ -22,6 +22,7 @@ public class TopupMapper {
                 rechargeId,
                 request.getPhoneNumber(),
                 request.getAmount(),
+                request.getCarrier() != null ? request.getCarrier().name() : null,
                 "PENDING");
     }
 }

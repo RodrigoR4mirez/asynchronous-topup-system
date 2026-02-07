@@ -29,6 +29,9 @@ public class TopupRequestEntity {
     @Column(name = "amount", precision = 10, scale = 2, nullable = false)
     public BigDecimal amount;
 
+    @Column(name = "carrier", length = 20)
+    public String carrier;
+
     @Column(name = "status", length = 20)
     public String status;
 
@@ -52,12 +55,14 @@ public class TopupRequestEntity {
      * @param rechargeId  The UUID of the recharge.
      * @param phoneNumber The phone number.
      * @param amount      The amount.
+     * @param carrier     The carrier name.
      * @param status      The initial status.
      */
-    public TopupRequestEntity(String rechargeId, String phoneNumber, BigDecimal amount, String status) {
+    public TopupRequestEntity(String rechargeId, String phoneNumber, BigDecimal amount, String carrier, String status) {
         this.rechargeId = rechargeId;
         this.phoneNumber = phoneNumber;
         this.amount = amount;
+        this.carrier = carrier;
         this.status = status;
     }
 }

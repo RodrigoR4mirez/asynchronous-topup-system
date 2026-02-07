@@ -263,6 +263,7 @@ docker exec -it mariadb10432 mysql -u root -p123456789 phone_recharge_db -e \
                                                  recharge_id VARCHAR(36) PRIMARY KEY, \
                                                  phone_number VARCHAR(15) NOT NULL, \
                                                  amount DECIMAL(10,2) NOT NULL, \
+                                                 carrier VARCHAR(20),
                                                  status VARCHAR(20) DEFAULT 'PENDING', \
                                                  created_at DATETIME(6) DEFAULT CURRENT_TIMESTAMP(6), \
                                                  updated_at DATETIME(6) DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6) ); \
@@ -296,4 +297,6 @@ DELETE FROM process_audits; \
 DELETE FROM recharge_requests;" 
 ```
 
+docker exec -it mariadb10432 mysql -u root -p123456789 phone_recharge_db -e \
+"drop table recharge_requests;"
 

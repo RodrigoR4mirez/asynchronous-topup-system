@@ -24,6 +24,9 @@ public class RechargeRequest {
     public BigDecimal amount;
 
     @Column(length = 20)
+    public String carrier;
+
+    @Column(length = 20)
     public String status;
 
     @CreationTimestamp

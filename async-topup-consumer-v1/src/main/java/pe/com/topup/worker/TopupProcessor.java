@@ -48,9 +48,9 @@ public class TopupProcessor {
         }
 
         String requestId = event.getRequestId();
-        // Infer carrier from phone number or default to known operator
+        // Use carrier directly from event
         String phoneNumber = event.getPhoneNumber() != null ? event.getPhoneNumber().toString() : "";
-        String carrier = resolveOperator(phoneNumber);
+        String carrier = event.getCarrier() != null ? event.getCarrier().toString() : "UNKNOWN";
 
         LOG.debugf("Resolved Carrier: %s for PhoneNumber: %s", carrier, phoneNumber);
         LOG.debugf("Checking balance for Carrier: %s", carrier);
@@ -116,9 +116,4 @@ public class TopupProcessor {
                 .onItem().invoke(a -> LOG.debugf("Audit created for %s", requestId));
     }
 
-    private String resolveOperator(String phoneNumber) {
-        // Implement logic to resolve operator from phone number
-        // For now, default to "Movistar" as requested/assumed
-        return "Movistar";
-    }
 }

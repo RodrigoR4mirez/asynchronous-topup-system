@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS recharge_requests (
                                                  recharge_id VARCHAR(36) PRIMARY KEY,
                                                  phone_number VARCHAR(15) NOT NULL,
                                                  amount DECIMAL(10,2) NOT NULL,
+                                                 carrier VARCHAR(20),
                                                  status VARCHAR(20) DEFAULT 'PENDING',
                                                  created_at DATETIME(6) DEFAULT CURRENT_TIMESTAMP(6),
                                                  updated_at DATETIME(6) DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)

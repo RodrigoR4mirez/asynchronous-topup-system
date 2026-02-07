@@ -48,6 +48,15 @@ public class TopupRequestEntity {
     public BigDecimal amount;
 
     /**
+     * Nombre de la operadora (e.g., MOVISTAR, CLARO).
+     * <p>
+     * Campo añadido para identificar el operador de la recarga.
+     * </p>
+     */
+    @Column(name = "carrier", length = 20)
+    public String carrier;
+
+    /**
      * Estado actual de la solicitud (e.g., PENDING, SENT_TO_KAFKA).
      * <p>
      * Controla el flujo de procesamiento de la recarga.
