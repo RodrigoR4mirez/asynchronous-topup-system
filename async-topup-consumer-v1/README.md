@@ -191,3 +191,136 @@ docker exec -it kafka-broker-1 kafka-topics \
   --create --topic topup-topic \
   --partitions 3 --replication-factor 2
 ```
+
+---
+
+## 🐳 Docker
+
+### Build Image
+```bash
+docker build -f Dockerfile -t async-topup-consumer-v1:latest .
+```
+**Explicación:** Construye la imagen Docker del consumer usando multi-stage build (Maven + OpenJDK 21).
+
+### Run Container
+```bash
+docker run -d \
+  --name async-consumer \
+  -p 8086:8086 \
+  -e CONFIG_DB_HOST=192.168.18.29:3307 \
+  -e CONFIG_DB_USERNAME=root \
+  -e CONFIG_DB_PASSWORD=123456789 \
+  -e KAFKA_BROKERS=PLAINTEXT://192.168.18.29:19092,PLAINTEXT://192.168.18.29:29092 \
+  -e SCHEMA_REGISTRY_URL=http://192.168.18.29:8081 \
+  async-topup-consumer-v1:latest
+```
+
+**Explicación de variables de entorno:**
+- `CONFIG_DB_HOST`: IP y puerto del host donde corre MariaDB (formato: host:puerto)
+- `CONFIG_DB_USERNAME`: Usuario de base de datos
+- `CONFIG_DB_PASSWORD`: Contraseña de base de datos
+- `KAFKA_BROKERS`: Direcciones de los brokers de Kafka
+- `SCHEMA_REGISTRY_URL`: URL del Schema Registry de Confluent
+
+### Useful Commands
+
+```bash
+# Ver logs en tiempo real
+docker logs -f async-consumer
+
+# Ver logs de las últimas 100 líneas
+docker logs --tail 100 async-consumer
+
+# Buscar errores en logs
+docker logs async-consumer 2>&1 | grep -i error
+
+# Ver mensajes procesados de Kafka
+docker logs async-consumer 2>&1 | grep -i "processing\|completed\|failed"
+
+# Verificar conexión a Kafka
+docker logs async-consumer 2>&1 | grep -i "SRMSG18257"
+
+# Detener el contenedor
+docker stop async-consumer
+
+# Iniciar el contenedor
+docker start async-consumer
+
+# Reiniciar el contenedor
+docker restart async-consumer
+
+# Eliminar el contenedor
+docker rm -f async-consumer
+
+# Ver estado del contenedor
+docker ps -a --filter "name=async-consumer"
+
+# Entrar al contenedor (shell)
+docker exec -it async-consumer /bin/bash
+```
+
+---
+
+## 📊 Monitoring
+
+### Verificar que el Consumer está procesando eventos
+```bash
+# Ver logs del consumer en tiempo real
+docker logs -f async-consumer
+
+# Verificar conexión a Kafka y subscripción al topic
+docker logs async-consumer | grep "topup-topic"
+
+# Ver transacciones completadas
+docker logs async-consumer | grep "COMPLETED"
+
+# Ver transacciones fallidas
+docker logs async-consumer | grep "FAILED"
+```
+
+### Verificar procesamiento en base de datos
+```bash
+# Ver últimas recargas procesadas
+docker exec -it mariadb10432 mysql -u root -p123456789 phone_recharge_db -e \
+"SELECT recharge_id, phone_number, amount, status, created_at 
+FROM recharge_requests 
+ORDER BY created_at DESC LIMIT 10;"
+
+# Ver saldos actuales
+docker exec -it mariadb10432 mysql -u root -p123456789 phone_recharge_db -e \
+"SELECT operator_name, current_balance FROM balance_wallets;"
+
+# Ver auditoría
+docker exec -it mariadb10432 mysql -u root -p123456789 phone_recharge_db -e \
+"SELECT * FROM process_audits ORDER BY completion_date DESC LIMIT 5;"
+```
+
+---
+
+## ⚠️ Troubleshooting
+
+### El consumer no procesa mensajes
+```bash
+# 1. Verificar que Kafka esté accesible
+telnet 192.168.18.29 19092
+
+# 2. Verificar logs de conexión
+docker logs async-consumer | grep -i "error\|exception"
+
+# 3. Verificar que el topic existe
+docker exec -it kafka-broker-1 kafka-topics --list --bootstrap-server localhost:19092
+
+# 4. Ver mensajes en el topic
+docker exec -it kafka-broker-1 kafka-console-consumer \
+  --bootstrap-server localhost:19092 \
+  --topic topup-topic --from-beginning
+```
+
+### Errores de base de datos
+```bash
+# Verificar conectividad a MariaDB
+telnet 192.168.18.29 3307
+
+# Ver logs específicos de BD
+docker logs async-consumer 2>&1 | grep -i "mysql\|database\|connection"
+```

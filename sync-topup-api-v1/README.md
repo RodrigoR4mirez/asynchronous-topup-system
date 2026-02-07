@@ -77,8 +77,9 @@ Documenta cada método y clase con Javadoc.
 | `amount` | `Decimal` | **Obligatorio** | Monto monetario de la recarga. Debe ser un valor positivo, con un mínimo permitido de `0.1`. |
 | `carrier` | `Enum` | **Obligatorio** | Operadora telefónica asociada al número. Valores permitidos: `MOVISTAR`, `CLARO`, `ENTEL`. |
 
-## CURL
-```shell
+## 🧪 Testing
+### CURL Test
+```bash
 response=$(curl -s -w "\n%{http_code}" -X POST http://localhost:8084/v1/topups \
   -H "Content-Type: application/json" \
   -d '{"phoneNumber":"985725003","amount":10,"carrier":"CLARO"}')
@@ -86,3 +87,71 @@ code=$(echo "$response" | tail -1)
 body=$(echo "$response" | sed '$d')
 [ -n "$body" ] && echo "$body" | jq . 2>/dev/null || echo "✓ $code Accepted"
 ```
+
+### Simple Test
+```bash
+curl -X POST http://localhost:8084/v1/topups \
+  -H "Content-Type: application/json" \
+  -d '{"phoneNumber":"999888777","amount":50,"carrier":"MOVISTAR"}'
+```
+
+**Expected Response:** `HTTP 202 Accepted`
+
+
+---
+
+## 🐳 Docker
+
+### Build Image
+```bash
+docker build -f Dockerfile -t sync-topup-api-v1:latest .
+```
+**Explicación:** Construye la imagen Docker del microservicio API usando multi-stage build (Maven + OpenJDK 21).
+
+### Run Container
+```bash
+docker run -d \
+  --name sync-api \
+  -p 8084:8084 \
+  -e DB_HOST=192.168.18.29 \
+  -e DB_PORT=3307 \
+  -e DB_USERNAME=root \
+  -e DB_PASSWORD=123456789 \
+  sync-topup-api-v1:latest
+```
+
+**Explicación de variables de entorno:**
+- `DB_HOST`: IP del host donde corre MariaDB
+- `DB_PORT`: Puerto de MariaDB (3307)
+- `DB_USERNAME`: Usuario de base de datos
+- `DB_PASSWORD`: Contraseña de base de datos
+
+### Useful Commands
+
+```bash
+# Ver logs en tiempo real
+docker logs -f sync-api
+
+# Ver logs de las últimas 100 líneas
+docker logs --tail 100 sync-api
+
+# Detener el contenedor
+docker stop sync-api
+
+# Iniciar el contenedor
+docker start sync-api
+
+# Reiniciar el contenedor
+docker restart sync-api
+
+# Eliminar el contenedor
+docker rm -f sync-api
+
+# Ver estado del contenedor
+docker ps -a --filter "name=sync-api"
+
+# Entrar al contenedor (shell)
+docker exec -it sync-api /bin/bash
+```
+
+---

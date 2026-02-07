@@ -306,3 +306,84 @@ code=$(echo "$response" | tail -1)
 body=$(echo "$response" | sed '$d')
 [ -n "$body" ] && echo "$body" | jq . 2>/dev/null || echo "✓ $code Accepted"
 ```
+
+
+```
+
+---
+
+## 🐳 Docker
+
+### Build Image
+```bash
+docker build -f Dockerfile -t async-topup-producer-v1:latest .
+```
+**Explicación:** Construye la imagen Docker del producer usando multi-stage build (Maven + OpenJDK 21).
+
+### Run Container
+```bash
+docker run -d \
+  --name async-producer \
+  -p 8085:8085 \
+  -e DB_HOST=192.168.18.29 \
+  -e DB_PORT=3307 \
+  -e DB_USERNAME=root \
+  -e DB_PASSWORD=123456789 \
+  -e KAFKA_BROKERS=PLAINTEXT://192.168.18.29:19092,PLAINTEXT://192.168.18.29:29092 \
+  -e SCHEMA_REGISTRY_URL=http://192.168.18.29:8081 \
+  async-topup-producer-v1:latest
+```
+
+**Explicación de variables de entorno:**
+- `DB_HOST`: IP del host donde corre MariaDB
+- `DB_PORT`: Puerto de MariaDB (3307)
+- `DB_USERNAME`: Usuario de base de datos
+- `DB_PASSWORD`: Contraseña de base de datos
+- `KAFKA_BROKERS`: Direcciones de los brokers de Kafka
+- `SCHEMA_REGISTRY_URL`: URL del Schema Registry de Confluent
+
+### Useful Commands
+
+```bash
+# Ver logs en tiempo real
+docker logs -f async-producer
+
+# Ver logs de las últimas 100 líneas
+docker logs --tail 100 async-producer
+
+# Buscar errores en logs
+docker logs async-producer 2>&1 | grep -i error
+
+# Ver si está enviando a Kafka
+docker logs async-producer 2>&1 | grep -i kafka
+
+# Detener el contenedor
+docker stop async-producer
+
+# Iniciar el contenedor
+docker start async-producer
+
+# Reiniciar el contenedor
+docker restart async-producer
+
+# Eliminar el contenedor
+docker rm -f async-producer
+
+# Ver estado del contenedor
+docker ps -a --filter "name=async-producer"
+
+# Entrar al contenedor (shell)
+docker exec -it async-producer /bin/bash
+```
+
+---
+
+## 📊 Monitoring
+
+### Verificar que el Producer está enviando eventos
+```bash
+# Ver logs del scheduler (cada 10 segundos)
+docker logs -f async-producer | grep "Paso"
+
+# Verificar conexión a Kafka
+docker logs async-producer | grep "SRMSG18258

@@ -12,7 +12,7 @@ Event-driven phone top-up system built with Quarkus 3 and Java 21. Three indepen
 ┌─────────────────────┐     ┌─────────────────────────┐     ┌─────────────────────┐
 │ sync-topup-api-v1   │     │ async-topup-producer-v1  │     │ async-topup         │
 │ (REST entry)        │     │ (Scheduler/Producer)     │     │ -consumer-v1        │
-│ :9090               │     │ :8085                    │     │ (Kafka Consumer)    │
+│ :8084               │     │ :8085                    │     │ (Kafka Consumer)    │
 │                     │     │                          │     │ :8086               │
 └─────────┬────────────┘     └────────────┬─────────────┘     └──────────┬──────────┘
          │                            │                            │
@@ -81,7 +81,7 @@ docker exec -it mariadb10432 mysql -u root -p123456789 phone_recharge_db -e "SEL
 ## API Endpoint
 
 ```bash
-POST http://localhost:9090/v1/topups
+POST http://localhost:8084/v1/topups
 Content-Type: application/json
 
 {

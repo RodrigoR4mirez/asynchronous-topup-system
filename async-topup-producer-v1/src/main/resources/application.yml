@@ -11,10 +11,10 @@ quarkus:
       enabled: false
   datasource:
     db-kind: mysql
-    username: root
-    password: 123456789
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:123456789}
     reactive:
-      url: vertx-reactive:mysql://localhost:3307/phone_recharge_db
+      url: vertx-reactive:mysql://${DB_HOST:localhost}:${DB_PORT:3307}/phone_recharge_db
   hibernate-orm:
     database:
       generation: none
@@ -28,10 +28,10 @@ mp:
         connector: smallrye-kafka
         topic: topup-topic
         bootstrap:
-          servers: ${CONFIG_KAFKA_BROKERS:PLAINTEXT://localhost:19092,PLAINTEXT://localhost:29092}
+          servers: ${KAFKA_BROKERS:PLAINTEXT://localhost:19092,PLAINTEXT://localhost:29092}
         schema:
           registry:
-            url: ${CONFIG_SCHEMA_REGISTRY_URL:http://localhost:8081}
+            url: ${SCHEMA_REGISTRY_URL:http://localhost:8081}
         key:
           serializer: org.apache.kafka.common.serialization.StringSerializer
         value:

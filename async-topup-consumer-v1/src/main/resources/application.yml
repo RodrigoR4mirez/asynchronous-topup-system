@@ -37,10 +37,10 @@ mp:
         connector: smallrye-kafka
         topic: topup-topic
         bootstrap:
-          servers: ${CONFIG_KAFKA_BROKERS:PLAINTEXT://localhost:19092,PLAINTEXT://localhost:29092}
+          servers: ${KAFKA_BROKERS:PLAINTEXT://localhost:19092,PLAINTEXT://localhost:29092}
         schema:
           registry:
-            url: ${CONFIG_SCHEMA_REGISTRY_URL:http://localhost:8081}
+            url: ${SCHEMA_REGISTRY_URL:http://localhost:8081}
         group:
           id: topup-consumer-group-01
         key:
