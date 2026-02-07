@@ -76,3 +76,13 @@ Documenta cada método y clase con Javadoc.
 | `phoneNumber` | `String` | **Obligatorio** | Número de teléfono destino de la recarga. Debe ser una cadena no vacía; se recomienda usar formato internacional. |
 | `amount` | `Decimal` | **Obligatorio** | Monto monetario de la recarga. Debe ser un valor positivo, con un mínimo permitido de `0.1`. |
 | `carrier` | `Enum` | **Obligatorio** | Operadora telefónica asociada al número. Valores permitidos: `MOVISTAR`, `CLARO`, `ENTEL`. |
+
+## CURL
+```shell
+response=$(curl -s -w "\n%{http_code}" -X POST http://localhost:9090/v1/topups \
+  -H "Content-Type: application/json" \
+  -d '{"phoneNumber":"985725003","amount":10,"carrier":"CLARO"}')
+code=$(echo "$response" | tail -1)
+body=$(echo "$response" | sed '$d')
+[ -n "$body" ] && echo "$body" | jq . 2>/dev/null || echo "✓ $code Accepted"
+```

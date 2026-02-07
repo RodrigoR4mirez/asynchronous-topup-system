@@ -9,6 +9,7 @@ import pe.com.topup.entity.BalanceWallet;
 public class BalanceWalletRepository implements PanacheRepositoryBase<BalanceWallet, Integer> {
 
     public Uni<BalanceWallet> findByOperatorName(String operatorName) {
-        return find("operatorName", operatorName).firstResult();
+        // Case-insensitive search to handle MOVISTAR vs Movistar
+        return find("LOWER(operatorName) = LOWER(?1)", operatorName).firstResult();
     }
 }
