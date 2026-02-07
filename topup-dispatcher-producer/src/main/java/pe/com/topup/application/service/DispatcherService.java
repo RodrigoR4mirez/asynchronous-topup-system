@@ -53,7 +53,7 @@ public class DispatcherService {
          * @return Un {@link Uni} que representa la completitud del ciclo de
          *         procesamiento.
          */
-        @Scheduled(every = "10s")
+        @Scheduled(every = "10s", delayed = "5s")
         @WithTransaction
         public Uni<Void> processPendingRequests() {
                 LOG.info("Paso 1: Inicio del ciclo de escaneo (Polling) de solicitudes pendientes.");
