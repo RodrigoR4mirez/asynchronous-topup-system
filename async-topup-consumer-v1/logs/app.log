@@ -1,0 +1,9 @@
+2026-02-07 08:38:33 WARN  [io.qu.config] (Quarkus Main Thread) Unrecognized configuration key "quarkus.http.port" was provided; it will be ignored; verify that the dependency extension for this configuration is set or that you did not make a typo
+2026-02-07 08:38:33 WARN  [io.qu.config] (Quarkus Main Thread) Unrecognized configuration key "quarkus.http.test-port" was provided; it will be ignored; verify that the dependency extension for this configuration is set or that you did not make a typo
+2026-02-07 08:38:33 WARN  [io.qu.config] (Quarkus Main Thread) The "quarkus.log.file.enable" config property is deprecated and should not be used anymore.
+2026-02-07 08:38:33 WARN  [io.qu.config] (Quarkus Main Thread) The "quarkus.hibernate-orm.database.generation" config property is deprecated and should not be used anymore.
+2026-02-07 08:38:34 INFO  [io.sm.re.me.kafka] (Quarkus Main Thread) SRMSG18229: Configured topics for channel 'topup-consumer': [topup-topic]
+2026-02-07 08:38:35 INFO  [io.sm.re.me.kafka] (smallrye-kafka-consumer-thread-0) SRMSG18257: Kafka consumer kafka-consumer-topup-consumer, connected to Kafka brokers 'PLAINTEXT://localhost:19092,PLAINTEXT://localhost:29092', belongs to the 'topup-consumer-group-01' consumer group and is configured to poll records from [topup-topic]
+2026-02-07 08:38:35 INFO  [io.quarkus] (Quarkus Main Thread) async-topup-consumer-v1 1.0.0-SNAPSHOT on JVM (powered by Quarkus 3.31.2) started in 6.761s. 
+2026-02-07 08:38:35 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2026-02-07 08:38:35 INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [cdi, config-yaml, confluent-registry-avro, hibernate-orm, hibernate-reactive, hibernate-reactive-panache, kafka-client, messaging, messaging-kafka, reactive-mysql-client, smallrye-context-propagation, vertx]

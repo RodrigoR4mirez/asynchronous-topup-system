@@ -181,12 +181,12 @@ docker exec -it mariadb10432 mysql -u root -p123456789 phone_recharge_db -e \
 
 ```shell
 ## Eliminar topico
-docker exec -it kafka-broker-1 kafka-topics \                                
+docker exec -it kafka-broker-1 kafka-topics \
   --bootstrap-server localhost:19092 \
-  --delete --topic topup-topic  
+  --delete --topic topup-topic
   
 ## crear topico de nuevo
-docker exec -it kafka-broker-1 kafka-topics \                                
+docker exec -it kafka-broker-1 kafka-topics \
   --bootstrap-server localhost:19092 \
   --create --topic topup-topic \
   --partitions 3 --replication-factor 2

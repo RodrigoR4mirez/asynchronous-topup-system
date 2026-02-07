@@ -1,0 +1,40 @@
+2026-02-07 08:30:22 WARN  [io.qu.config] (Quarkus Main Thread) Unrecognized configuration key "quarkus.http.port" was provided; it will be ignored; verify that the dependency extension for this configuration is set or that you did not make a typo
+2026-02-07 08:30:22 WARN  [io.qu.config] (Quarkus Main Thread) Unrecognized configuration key "quarkus.http.test-port" was provided; it will be ignored; verify that the dependency extension for this configuration is set or that you did not make a typo
+2026-02-07 08:30:22 WARN  [io.qu.config] (Quarkus Main Thread) The "quarkus.log.file.enable" config property is deprecated and should not be used anymore.
+2026-02-07 08:30:22 WARN  [io.qu.config] (Quarkus Main Thread) The "quarkus.hibernate-orm.database.generation" config property is deprecated and should not be used anymore.
+2026-02-07 08:30:23 INFO  [io.sm.re.me.kafka] (Quarkus Main Thread) SRMSG18229: Configured topics for channel 'topup-consumer': [topup-topic]
+2026-02-07 08:30:24 INFO  [io.sm.re.me.kafka] (smallrye-kafka-consumer-thread-0) SRMSG18257: Kafka consumer kafka-consumer-topup-consumer, connected to Kafka brokers 'PLAINTEXT://localhost:19092,PLAINTEXT://localhost:29092', belongs to the 'topup-consumer-group-01' consumer group and is configured to poll records from [topup-topic]
+2026-02-07 08:30:24 INFO  [io.quarkus] (Quarkus Main Thread) async-topup-consumer-v1 1.0.0-SNAPSHOT on JVM (powered by Quarkus 3.31.2) started in 8.036s. 
+2026-02-07 08:30:24 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2026-02-07 08:30:24 INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [cdi, config-yaml, confluent-registry-avro, hibernate-orm, hibernate-reactive, hibernate-reactive-panache, kafka-client, messaging, messaging-kafka, reactive-mysql-client, smallrye-context-propagation, vertx]
+2026-02-07 08:33:05 INFO  [io.sm.re.me.kafka] (vert.x-eventloop-thread-1) SRMSG18256: Initialize record store for topic-partition 'topup-topic-0' at position -1.
+2026-02-07 08:33:05 INFO  [pe.co.to.wo.TopupProcessor] (vert.x-eventloop-thread-1) Starting processing for RequestId: 8ad6354a-3db6-4830-8c9b-9840f1f88a47, PhoneNumber: 985725707, Amount: 10.00
+2026-02-07 08:33:06 INFO  [pe.co.to.wo.TopupProcessor] (vert.x-eventloop-thread-1) Wallet found for carrier MOVISTAR. Current Balance: 100.00
+2026-02-07 08:33:06 INFO  [pe.co.to.wo.TopupProcessor] (vert.x-eventloop-thread-1) Sufficient balance. Deducting 10.00 from wallet.
+2026-02-07 08:33:06 INFO  [pe.co.to.wo.TopupProcessor] (vert.x-eventloop-thread-1) Wallet updated. Updating recharge status to COMPLETED.
+2026-02-07 08:33:06 INFO  [pe.co.to.wo.TopupProcessor] (vert.x-eventloop-thread-1) Status updated. Creating success audit.
+2026-02-07 08:33:06 WARN  [or.hi.or.session] (vert.x-eventloop-thread-1) HHH90010101: Closing shared session with unprocessed transaction completion actions
+2026-02-07 08:33:06 WARN  [or.hi.or.session] (vert.x-eventloop-thread-1) HHH90010108: Closing session with unprocessed clean up bulk operations, forcing their execution
+2026-02-07 08:34:33 INFO  [pe.co.to.wo.TopupProcessor] (vert.x-eventloop-thread-1) Starting processing for RequestId: 20670f86-b1c5-410d-b349-2f5e807b4f4a, PhoneNumber: 985725708, Amount: 10.00
+2026-02-07 08:34:33 INFO  [pe.co.to.wo.TopupProcessor] (vert.x-eventloop-thread-1) Wallet found for carrier MOVISTAR. Current Balance: 90.00
+2026-02-07 08:34:33 INFO  [pe.co.to.wo.TopupProcessor] (vert.x-eventloop-thread-1) Sufficient balance. Deducting 10.00 from wallet.
+2026-02-07 08:34:33 INFO  [pe.co.to.wo.TopupProcessor] (vert.x-eventloop-thread-1) Wallet updated. Updating recharge status to COMPLETED.
+2026-02-07 08:34:33 INFO  [pe.co.to.wo.TopupProcessor] (vert.x-eventloop-thread-1) Status updated. Creating success audit.
+2026-02-07 08:34:33 WARN  [or.hi.or.session] (vert.x-eventloop-thread-1) HHH90010101: Closing shared session with unprocessed transaction completion actions
+2026-02-07 08:34:33 WARN  [or.hi.or.session] (vert.x-eventloop-thread-1) HHH90010108: Closing session with unprocessed clean up bulk operations, forcing their execution
+2026-02-07 08:35:23 INFO  [pe.co.to.wo.TopupProcessor] (vert.x-eventloop-thread-1) Starting processing for RequestId: e2d2065c-b55c-4fed-b450-007b3f860c2a, PhoneNumber: 985725709, Amount: 10.00
+2026-02-07 08:35:23 INFO  [pe.co.to.wo.TopupProcessor] (vert.x-eventloop-thread-1) Wallet found for carrier CLARO. Current Balance: 50.00
+2026-02-07 08:35:23 INFO  [pe.co.to.wo.TopupProcessor] (vert.x-eventloop-thread-1) Sufficient balance. Deducting 10.00 from wallet.
+2026-02-07 08:35:23 INFO  [pe.co.to.wo.TopupProcessor] (vert.x-eventloop-thread-1) Wallet updated. Updating recharge status to COMPLETED.
+2026-02-07 08:35:23 INFO  [pe.co.to.wo.TopupProcessor] (vert.x-eventloop-thread-1) Status updated. Creating success audit.
+2026-02-07 08:35:23 WARN  [or.hi.or.session] (vert.x-eventloop-thread-1) HHH90010101: Closing shared session with unprocessed transaction completion actions
+2026-02-07 08:35:23 WARN  [or.hi.or.session] (vert.x-eventloop-thread-1) HHH90010108: Closing session with unprocessed clean up bulk operations, forcing their execution
+2026-02-07 08:35:23 INFO  [pe.co.to.wo.TopupProcessor] (vert.x-eventloop-thread-1) Starting processing for RequestId: e399298b-9283-4860-94d9-50c3c7d61e66, PhoneNumber: 985725709, Amount: 10.00
+2026-02-07 08:35:23 INFO  [pe.co.to.wo.TopupProcessor] (vert.x-eventloop-thread-1) Wallet found for carrier CLARO. Current Balance: 40.00
+2026-02-07 08:35:23 INFO  [pe.co.to.wo.TopupProcessor] (vert.x-eventloop-thread-1) Sufficient balance. Deducting 10.00 from wallet.
+2026-02-07 08:35:23 INFO  [pe.co.to.wo.TopupProcessor] (vert.x-eventloop-thread-1) Wallet updated. Updating recharge status to COMPLETED.
+2026-02-07 08:35:23 INFO  [pe.co.to.wo.TopupProcessor] (vert.x-eventloop-thread-1) Status updated. Creating success audit.
+2026-02-07 08:35:23 WARN  [or.hi.or.session] (vert.x-eventloop-thread-1) HHH90010101: Closing shared session with unprocessed transaction completion actions
+2026-02-07 08:35:23 WARN  [or.hi.or.session] (vert.x-eventloop-thread-1) HHH90010108: Closing session with unprocessed clean up bulk operations, forcing their execution
+2026-02-07 08:38:11 INFO  [io.sm.re.me.kafka] (smallrye-kafka-consumer-thread-0) SRMSG18224: Executing consumer revoked re-balance listener for group 'topup-consumer-group-01'
+2026-02-07 08:38:12 INFO  [io.quarkus] (Quarkus Main Thread) async-topup-consumer-v1 stopped in 0.684s
