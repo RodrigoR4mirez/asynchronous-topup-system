@@ -2,6 +2,30 @@
 
 Sistema de recarga telefónica basado en eventos construido con **Quarkus 3** y **Java 21**. Tres microservicios independientes se comunican vía Kafka (serialización Avro) y comparten una base de datos MySQL.
 
+![Arquitectura del Sistema](./files/Diagrama.jpeg)
+
+## 🎯 Resumen 
+
+**Arquitectura event-driven** con 3 microservicios desacoplados:
+
+**📥 Componentes:**
+- **sync-topup-api-v1** (REST) → Recibe solicitudes y persiste en MySQL como `PENDING`
+- **async-topup-producer-v1** (Scheduler) → Polling cada 10s, publica a Kafka, marca `SENT_TO_KAFKA`
+- **async-topup-consumer-v1** (Consumer) → Procesa eventos, valida saldo, actualiza `COMPLETED`/`FAILED`
+
+**💡 Decisiones Clave:**
+- **¿Por qué scheduler vs Kafka directo?** 
+  - Cliente recarga $50 → API confirma `202` al instante aunque Kafka esté caído
+  - Scheduler reintenta automáticamente sin duplicar ni perder datos
+  - Analogía: Como comprar boleto de avión (venta inmediata, emisión después)
+
+- **¿Por qué Kafka?**
+  - Desacoplamiento para escalar componentes independientemente
+  - Garantía de entrega y absorción de picos de tráfico
+  - Schema Registry (Avro) asegura compatibilidad entre versiones
+
+**🔄 Flujo:** Cliente → API → MySQL (`PENDING`) → Scheduler → Kafka → Consumer → MySQL (`COMPLETED`/`FAILED`)
+
 ---
 
 ## 🏗️ Arquitectura
