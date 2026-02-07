@@ -1,9 +1,9 @@
-# Topup Dispatcher Producer
+# Async Topup Producer v1
 
 ## Descripción General
 
 ASYNCHRONOUS: **Quarkus 3** y **Java 21**.  
-Componente: **topup-dispatcher-producer**.
+Componente: **async-topup-producer-v1**.
 
 Este componente es un **Worker Asíncrono** encargado de desacoplar la API de la mensajería mediante el envío de eventos a **Kafka**.
 
@@ -297,6 +297,12 @@ DELETE FROM process_audits; \
 DELETE FROM recharge_requests;" 
 ```
 
-docker exec -it mariadb10432 mysql -u root -p123456789 phone_recharge_db -e \
-"drop table recharge_requests;"
-
+## CURL
+```shell
+response=$(curl -s -w "\n%{http_code}" -X POST http://localhost:8084/v1/topups \
+  -H "Content-Type: application/json" \
+  -d '{"phoneNumber":"985725003","amount":10,"carrier":"CLARO"}')
+code=$(echo "$response" | tail -1)
+body=$(echo "$response" | sed '$d')
+[ -n "$body" ] && echo "$body" | jq . 2>/dev/null || echo "✓ $code Accepted"
+```

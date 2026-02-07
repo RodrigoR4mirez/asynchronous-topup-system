@@ -1,4 +1,4 @@
-Actúa como un experto en Quarkus y Java 21. Genera el microservicio topup-gateway-api utilizando un flujo 100% reactivo con Mutiny. El proyecto ya tiene configurada la conexión a la base de datos MariaDB en el archivo application.yml (o application.yaml), por lo que no es necesario generar archivos de configuración adicionales.
+Actúa como un experto en Quarkus y Java 21. Genera el microservicio sync-topup-api-v1 utilizando un flujo 100% reactivo con Mutiny. El proyecto ya tiene configurada la conexión a la base de datos MariaDB en el archivo application.yml (o application.yaml), por lo que no es necesario generar archivos de configuración adicionales.
 
 Instrucciones del Proyecto:
 
@@ -79,7 +79,7 @@ Documenta cada método y clase con Javadoc.
 
 ## CURL
 ```shell
-response=$(curl -s -w "\n%{http_code}" -X POST http://localhost:9090/v1/topups \
+response=$(curl -s -w "\n%{http_code}" -X POST http://localhost:8084/v1/topups \
   -H "Content-Type: application/json" \
   -d '{"phoneNumber":"985725003","amount":10,"carrier":"CLARO"}')
 code=$(echo "$response" | tail -1)

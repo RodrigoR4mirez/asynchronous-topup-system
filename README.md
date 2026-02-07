@@ -14,7 +14,7 @@ El sistema se divide en tres componentes independientes que se ejecutan sobre Do
 
 ## 🛠️ Componentes del Proyecto
 
-### 1. `topup-gateway-api` (API Gateway)
+### 1. `sync-topup-api-v1` (API Gateway)
 * **Responsabilidad:** Punto de entrada para los usuarios. Valida el formato del JSON e inserta la solicitud inicial en la base de datos.
 * **URL:** `POST http://localhost:8080/v1/topups`
 * **Input (JSON):**
@@ -27,7 +27,7 @@ El sistema se divide en tres componentes independientes que se ejecutan sobre Do
     ```
 * **Output:** `202 Accepted` (Indica que la petición fue recibida y está en proceso de validación).
 
-### 2. `topup-dispatcher-producer` (Event Dispatcher)
+### 2. `async-topup-producer-v1` (Event Dispatcher)
 * **Responsabilidad:** Escanea la base de datos en busca de nuevas solicitudes y las publica en Kafka para su procesamiento asíncrono.
 * **Mecanismo:** Utiliza `@Scheduled` de Quarkus para revisar la tabla cada 1 segundo (Polling).
 * **Output:** Evento serializado en **Avro** enviado al tópico `topup-events`.
