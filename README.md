@@ -102,7 +102,14 @@ docker ps | grep kafka
 
 # Verificar Schema Registry
 curl http://localhost:8081/subjects
+
+# Crear el nuevo tópico para recargas (2 particiones)
+docker exec -it kafka-broker-1 kafka-topics   --bootstrap-server kafka-broker-1:9092,kafka-broker-2:9092   --if-not-exists   --create   --topic topup-topic   --partitions 2   --replication-factor 2
+
+### Eliminar tópico
+docker exec -it kafka-broker-1 kafka-topics   --bootstrap-server localhost:19092   --delete   --topic topup-topic
 ```
+
 
 ### Paso 2: Construir Imágenes Docker
 
